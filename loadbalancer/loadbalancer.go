@@ -112,7 +112,7 @@ func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() serve.Server {
 	defer lb.mutex.Unlock()
 	var totalWeight int
 	for _, server := range lb.servers {
-		simpleServer :=&serve.SimpleServer{}
+		simpleServer := server.(*serve.SimpleServer)
 		if simpleServer.IsAlive() {
 			totalWeight += 1 // Consider each server with a weight of 1
 		}
