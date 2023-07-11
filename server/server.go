@@ -21,7 +21,7 @@ type SimpleServer struct {
 	proxy       *httputil.ReverseProxy
 	healthCheck *healthCheck
 	mutex       sync.Mutex
-	currentcons int
+	currentCons int
 	weight   int
 }
 
