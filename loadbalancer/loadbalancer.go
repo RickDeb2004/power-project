@@ -1,9 +1,11 @@
-package main
+package load
 
 import (
 	"fmt"
 	"net/http"
-	
+	"power-project/cache"
+	"power-project/responsewriter"
+	"power-project/server"
 	"net/url"
 	"os"
 	"sync"
