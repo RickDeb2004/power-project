@@ -29,7 +29,7 @@ type LoadBalancer struct {
 	cache      *cacher.Cache
 }
 
-func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancingAlgorithm,  cacher.*Cache) *LoadBalancer {
+func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancingAlgorithm,  cache *cacher.Cache) *LoadBalancer {
 	for _, server := range servers {
 		server.(*serve.SimpleServer).startHealthCheck()
 	}

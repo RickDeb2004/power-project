@@ -82,7 +82,7 @@ func (s *SimpleServer) startHealthCheck() {
 				s.checkHealth()
 			}
 		}
-	}()
+	}
 }
 
 func (s *SimpleServer) checkHealth() {
