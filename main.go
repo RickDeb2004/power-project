@@ -20,7 +20,7 @@ func main() {
 		serve.newServer("http://www.duckduckgo.com", "http://www.duckduckgo.com/health", 5*time.Second, 2*time.Second),
 	}
 	cache := cacher.NewCache()
-	lb := load.NewLoadBalancer("8000", servers, WeightedRoundRobin, &cache)
+	lb := load.NewLoadBalancer("8000", servers, load.WeightedRoundRobin, &cache)
 	handleRedirect := func(w http.ResponseWriter, r *http.Request) {
 		lb.ServeProxy(w, r)
 	}
