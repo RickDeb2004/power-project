@@ -3,13 +3,12 @@ package load
 import (
 	"fmt"
 	"net/http"
-	"power-project/cache"
-	"power-project/responsewriter"
-	"power-project/server"
 	"net/url"
 	"os"
+	cacher "power-project/cache"
+	"power-project/responsewriter"
+	serve "power-project/server"
 	"sync"
-
 )
 
 type LoadBalancingAlgorithm int
@@ -113,14 +112,14 @@ func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() serve.Server {
 	defer lb.mutex.Unlock()
 	var totalWeight int
 	for _, server := range lb.servers {
-		simpleServer := server.(*serve.SimpleServer)
+		simpleServer :=&serve.SimpleServer{}
 		if simpleServer.IsAlive() {
 			totalWeight += 1 // Consider each server with a weight of 1
 		}
 	}
 	var selectedServer serve.Server
 	for _, server := range lb.servers {
-		simpleServer := server.(*serve.SimpleServer)
+		simpleServer := &serve.SimpleServer{}
 		simpleServer.mutex.Lock()
 		if simpleServer.IsAlive() {
 			selectedServer = server
@@ -139,7 +138,7 @@ func (lb *LoadBalancer) getAvailableServerLeastConnections() serve.Server {
 	var minConnections int
 	var selectedServer serve.Server
 	for _, server := range lb.servers {
-		simpleServer := server.(*serve.SimpleServer)
+		simpleServer := &serve.SimpleServer{}
 		simpleServer.mutex.Lock()
 		if simpleServer.IsAlive() {
 			if minConnections == 0 || simpleServer.currentcons < minConnections {
