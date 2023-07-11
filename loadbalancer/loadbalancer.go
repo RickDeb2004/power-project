@@ -153,8 +153,8 @@ func (lb *LoadBalancer) getAvailableServerLeastConnections() serve.Server {
 		
 		simpleServer.mutex.Lock()
 		if simpleServer.IsAlive() {
-			if minConnections == 0 || simpleServer.currentcons < minConnections {
-				minConnections = simpleServer.currentcons
+			if minConnections == 0 || simpleServer.currentCons < minConnections {
+				minConnections = simpleServer.currentCons
 				selectedServer = server
 			}
 		}
