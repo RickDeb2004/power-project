@@ -30,8 +30,18 @@ type LoadBalancer struct {
 
 func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancingAlgorithm,  cache *cacher.Cache) *LoadBalancer {
 	for _, server := range servers {
-		server.(*serve.SimpleServer).StartHealthCheck()
+		simpleServer,ok:=server.(*serve.SimpleServer)
+		         {
+			if!ok{
+				fmt.Println("Server is not a SimpleServer")
+				os.Exit(1)
+				continue
+			}
+			simpleServer.StartHealthCheck()
+		
+		
 	} 
+		}
 
 	return &LoadBalancer{
 		port:      port,
