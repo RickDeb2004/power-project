@@ -31,7 +31,7 @@ type LoadBalancer struct {
 
 func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancingAlgorithm,  cache *cacher.Cache) *LoadBalancer {
 	for _, server := range servers {
-		server.(*serve.SimpleServer).startHealthCheck()
+		server.(*serve.SimpleServer).StartHealthCheck()
 	} 
 
 	return &LoadBalancer{
