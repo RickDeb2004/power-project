@@ -127,6 +127,7 @@ func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() serve.Server {
 			break
 		}
 		simpleServer.mutex.Unlock()
+		
 	}
 	lb.connection++
 	return selectedServer
