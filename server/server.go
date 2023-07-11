@@ -20,7 +20,7 @@ type SimpleServer struct {
 	addr        string
 	proxy       *httputil.ReverseProxy
 	healthCheck *healthCheck
-	mutex       sync.Mutex
+	mutex       *sync.Mutex
 	currentcons int
 	weight   int
 }
@@ -52,6 +52,7 @@ func newServer(addr string, healthCheckURL string, healthCheckInterval, healthCh
 		addr:        addr,
 		proxy:       proxy,
 		healthCheck: healthCheck,
+        mutex:&sync.Mutex{},
 	}
 }
 
