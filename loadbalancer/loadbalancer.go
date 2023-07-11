@@ -23,15 +23,15 @@ const (
 type LoadBalancer struct {
 	port       string
 	algorithm  LoadBalancingAlgorithm
-	servers    []Server
+	servers    []serve.Server
 	mutex      *sync.Mutex
 	connection int
-	cache      *Cache
+	cache      *cacher.Cache
 }
 
-func NewLoadBalancer(port string, servers []Server, algorithm LoadBalancingAlgorithm, cache *Cache) *LoadBalancer {
+func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancingAlgorithm, cache. *Cache) *LoadBalancer {
 	for _, server := range servers {
-		server.(*SimpleServer).startHealthCheck()
+		server.(*serve.SimpleServer).startHealthCheck()
 	}
 
 	return &LoadBalancer{
@@ -78,7 +78,7 @@ func (lb *LoadBalancer) ServeProxy(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Forwarding request to address %q\n", targetServer.Address())
 
 	// Perform the request
-	respWriter := NewResponseWriter(w)
+	respWriter := response.NewResponseWriter(w)
 	targetServer.Serve(respWriter, r)
 
 	// Store response in cache
@@ -87,7 +87,7 @@ func (lb *LoadBalancer) ServeProxy(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (lb *LoadBalancer) getAvailableServerFunc(r *http.Request) Server {
+func (lb *LoadBalancer) getAvailableServerFunc(r *http.Request) serve.Server {
 	switch lb.algorithm {
 	case RoundRobinCount:
 		return lb.getAvailableServerRoundRobin()
@@ -100,7 +100,7 @@ func (lb *LoadBalancer) getAvailableServerFunc(r *http.Request) Server {
 	}
 }
 
-func (lb *LoadBalancer) getAvailableServerRoundRobin() Server {
+func (lb *LoadBalancer) getAvailableServerRoundRobin() serve.Server {
 	lb.mutex.Lock()
 	defer lb.mutex.Unlock()
 	server := lb.servers[lb.connection%len(lb.servers)]
@@ -108,19 +108,19 @@ func (lb *LoadBalancer) getAvailableServerRoundRobin() Server {
 	return server
 }
 
-func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() Server {
+func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() serve.Server {
 	lb.mutex.Lock()
 	defer lb.mutex.Unlock()
 	var totalWeight int
 	for _, server := range lb.servers {
-		simpleServer := server.(*SimpleServer)
+		simpleServer := server.(*serve.SimpleServer)
 		if simpleServer.IsAlive() {
 			totalWeight += 1 // Consider each server with a weight of 1
 		}
 	}
-	var selectedServer Server
+	var selectedServer serve.Server
 	for _, server := range lb.servers {
-		simpleServer := server.(*SimpleServer)
+		simpleServer := server.(*serve.SimpleServer)
 		simpleServer.mutex.Lock()
 		if simpleServer.IsAlive() {
 			selectedServer = server
@@ -133,13 +133,13 @@ func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() Server {
 	return selectedServer
 }
 
-func (lb *LoadBalancer) getAvailableServerLeastConnections() Server {
+func (lb *LoadBalancer) getAvailableServerLeastConnections() serve.Server {
 	lb.mutex.Lock()
 	defer lb.mutex.Unlock()
 	var minConnections int
-	var selectedServer Server
+	var selectedServer serve.Server
 	for _, server := range lb.servers {
-		simpleServer := server.(*SimpleServer)
+		simpleServer := server.(*serve.SimpleServer)
 		simpleServer.mutex.Lock()
 		if simpleServer.IsAlive() {
 			if minConnections == 0 || simpleServer.currentcons < minConnections {
