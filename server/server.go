@@ -75,7 +75,7 @@ func (s *SimpleServer) Serve(w http.ResponseWriter, r *http.Request) {
 	s.proxy.ServeHTTP(w, r)
 }
 
-func (s *SimpleServer) startHealthCheck() {
+func (s *SimpleServer) StartHealthCheck() {
 	go func() {
 		ticker := time.NewTicker(s.healthCheck.interval)
 		defer ticker.Stop()
