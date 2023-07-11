@@ -119,7 +119,7 @@ func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() serve.Server {
 	}
 	var selectedServer serve.Server
 	for _, server := range lb.servers {
-		simpleServer := &serve.SimpleServer{}
+		simpleServer := server.(*serve.SimpleServer)
 		simpleServer.mutex.Lock()
 		if simpleServer.IsAlive() {
 			selectedServer = server
@@ -139,7 +139,7 @@ func (lb *LoadBalancer) getAvailableServerLeastConnections() serve.Server {
 	var minConnections int
 	var selectedServer serve.Server
 	for _, server := range lb.servers {
-		simpleServer := &serve.SimpleServer{}
+		simpleServer := server.(*serve.SimpleServer)
 		
 		simpleServer.mutex.Lock()
 		if simpleServer.IsAlive() {
