@@ -140,6 +140,7 @@ func (lb *LoadBalancer) getAvailableServerLeastConnections() serve.Server {
 	var selectedServer serve.Server
 	for _, server := range lb.servers {
 		simpleServer := &serve.SimpleServer{}
+		
 		simpleServer.mutex.Lock()
 		if simpleServer.IsAlive() {
 			if minConnections == 0 || simpleServer.currentcons < minConnections {
