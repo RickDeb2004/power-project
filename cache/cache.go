@@ -2,7 +2,7 @@
 //                  2.load metrics
 //                  3.
 
-package main
+package cacher
 
 import (
 	"fmt"
