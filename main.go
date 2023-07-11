@@ -14,13 +14,13 @@ import (
 
 func main() {
 
-	servers := []Server{
-		newServer("http://www.facebook.com", "http://www.facebook.com/health", 5*time.Second, 2*time.Second),
-		newServer("http://www.bing.com", "http://www.bing.com/health", 5*time.Second, 2*time.Second),
-		newServer("http://www.duckduckgo.com", "http://www.duckduckgo.com/health", 5*time.Second, 2*time.Second),
+	servers := []serve.Server{
+		serve.newServer("http://www.facebook.com", "http://www.facebook.com/health", 5*time.Second, 2*time.Second),
+		serve.newServer("http://www.bing.com", "http://www.bing.com/health", 5*time.Second, 2*time.Second),
+		serve.newServer("http://www.duckduckgo.com", "http://www.duckduckgo.com/health", 5*time.Second, 2*time.Second),
 	}
-	cache := NewCache()
-	lb := NewLoadBalancer("8000", servers, WeightedRoundRobin, &cache)
+	cache := cacher.NewCache()
+	lb := load.NewLoadBalancer("8000", servers, WeightedRoundRobin, &cache)
 	handleRedirect := func(w http.ResponseWriter, r *http.Request) {
 		lb.ServeProxy(w, r)
 	}
