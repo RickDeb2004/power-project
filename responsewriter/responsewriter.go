@@ -21,8 +21,8 @@ func NewResponseWriter(w http.ResponseWriter) *ResponseWriter {
 		// Initialize any additional fields if needed
 	}
 }
-func (rw *ResponseWriter) Write(content []byte) (int, error) {
-	rw.BodyContent = content
+func (w *ResponseWriter) Write(content []byte) (int, error) {
+	w.BodyContent = content
 	return len(content), nil
 }
 
