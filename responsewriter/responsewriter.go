@@ -33,6 +33,6 @@ func(w*ResponseWriter)SetStatus(status int){
 	w.Status=status
 }
 
-func (rw *ResponseWriter) Body() []byte {
-	return rw.BodyContent
+func (w *ResponseWriter) Body() []byte {
+	return w.BodyContent
 }
