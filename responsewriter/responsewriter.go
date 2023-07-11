@@ -1,4 +1,4 @@
-package response
+package responsewriter
 
 import (
 	"net/http"
