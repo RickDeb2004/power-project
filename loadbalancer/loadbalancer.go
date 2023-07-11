@@ -78,7 +78,7 @@ func (lb *LoadBalancer) ServeProxy(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Forwarding request to address %q\n", targetServer.Address())
 
 	// Perform the request
-	respWriter := response.NewResponseWriter(w)
+	respWriter := responsewriter.NewResponseWriter(w)
 	targetServer.Serve(respWriter, r)
 
 	// Store response in cache
