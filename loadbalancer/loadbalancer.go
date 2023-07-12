@@ -23,7 +23,7 @@ type LoadBalancer struct {
 	port       string
 	algorithm  LoadBalancingAlgorithm
 	servers    []serve.Server
-	mutex      *sync.Mutex
+	Mutex      *sync.Mutex
 	connection int
 	cache      *cacher.Cache
 }
@@ -47,7 +47,7 @@ func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancin
 		algorithm: algorithm,
 		servers:   servers,
 		cache:     cache,
-		mutex:     &sync.Mutex{},
+		Mutex:     &sync.Mutex{},
 	}
 }
 func handleErr(err error) {
@@ -106,16 +106,16 @@ func (lb *LoadBalancer) getAvailableServerFunc(r *http.Request) serve.Server {
 }
 
 func (lb *LoadBalancer) getAvailableServerRoundRobin() serve.Server {
-	lb.mutex.Lock()
-	defer lb.mutex.Unlock()
+	lb.Mutex.Lock()
+	defer lb.Mutex.Unlock()
 	server := lb.servers[lb.connection%len(lb.servers)]
 	lb.connection++
 	return server
 }
 
 func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() serve.Server {
-	lb.mutex.Lock()
-	defer lb.mutex.Unlock()
+	lb.Mutex.Lock()
+	defer lb.Mutex.Unlock()
 	var totalWeight int
 	for _, server := range lb.servers {
 		simpleServer := server.(*serve.SimpleServer)
@@ -126,13 +126,13 @@ func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() serve.Server {
 	var selectedServer serve.Server
 	for _, server := range lb.servers {
 		simpleServer := server.(*serve.SimpleServer)
-		simpleServer.mutex.Lock()
+		simpleServer.Mutex.Lock()
 		if simpleServer.IsAlive() {
 			selectedServer = server
-			simpleServer.mutex.Unlock()
+			simpleServer.Mutex.Unlock()
 			break
 		}
-		simpleServer.mutex.Unlock()
+		simpleServer.Mutex.Unlock()
 
 	}
 	lb.connection++
@@ -140,21 +140,21 @@ func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() serve.Server {
 }
 
 func (lb *LoadBalancer) getAvailableServerLeastConnections() serve.Server {
-	lb.mutex.Lock()
-	defer lb.mutex.Unlock()
+	lb.Mutex.Lock()
+	defer lb.Mutex.Unlock()
 	var minConnections int
 	var selectedServer serve.Server
 	for _, server := range lb.servers {
 		simpleServer := server.(*serve.SimpleServer)
 
-		simpleServer.mutex.Lock()
+		simpleServer.Mutex.Lock()
 		if simpleServer.IsAlive() {
-			if minConnections == 0 || simpleServer.currentCons < minConnections {
-				minConnections = simpleServer.currentCons
+			if minConnections == 0 || simpleServer.CurrentCons < minConnections {
+				minConnections = simpleServer.CurrentCons
 				selectedServer = server
 			}
 		}
-		simpleServer.mutex.Unlock()
+		simpleServer.Mutex.Unlock()
 	}
 	lb.connection++
 	return selectedServer

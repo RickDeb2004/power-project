@@ -20,8 +20,8 @@ type SimpleServer struct {
 	addr        string
 	proxy       *httputil.ReverseProxy
 	healthCheck *healthCheck
-	mutex       sync.Mutex
-	currentCons int
+	Mutex       *sync.Mutex
+	CurrentCons int
 	weight   int
 }
 
@@ -31,7 +31,7 @@ type healthCheck struct {
 	timeout         time.Duration
 	healthy         bool
 	lastCheckedTime time.Time
-	mutex           sync.Mutex
+	Mutex           sync.Mutex
 }
 
 func newServer(addr string, healthCheckURL string, healthCheckInterval, healthCheckTimeout time.Duration) *SimpleServer {
@@ -52,7 +52,7 @@ func newServer(addr string, healthCheckURL string, healthCheckInterval, healthCh
 		addr:        addr,
 		proxy:       proxy,
 		healthCheck: healthCheck,
-        mutex: sync.Mutex{},
+        Mutex:  &sync.Mutex{},
 	}
 }
 
@@ -67,8 +67,8 @@ func (s *SimpleServer) Address() string {
 }
 
 func (s *SimpleServer) IsAlive() bool {
-	s.healthCheck.mutex.Lock()
-	defer s.healthCheck.mutex.Unlock()
+	s.healthCheck.Mutex.Lock()
+	defer s.healthCheck.Mutex.Unlock()
 	return s.healthCheck.healthy
 }
 
@@ -91,8 +91,8 @@ func (s *SimpleServer) StartHealthCheck() {
 }
 
 func (s *SimpleServer) checkHealth() {
-	s.healthCheck.mutex.Lock()
-	defer s.healthCheck.mutex.Unlock()
+	s.healthCheck.Mutex.Lock()
+	defer s.healthCheck.Mutex.Unlock()
 
 	if time.Since(s.healthCheck.lastCheckedTime) < s.healthCheck.interval {
 		return
