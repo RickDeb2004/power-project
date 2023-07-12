@@ -57,7 +57,7 @@ func NewServer(addr string, healthCheckURL string, healthCheckInterval, healthCh
 }
 
 func handleErr(err error) {
-	panic("unimplemented")
+	panic(err)
 }
 
 
