@@ -34,7 +34,7 @@ type healthCheck struct {
 	Mutex           sync.Mutex
 }
 
-func newServer(addr string, healthCheckURL string, healthCheckInterval, healthCheckTimeout time.Duration) *SimpleServer {
+func NewServer(addr string, healthCheckURL string, healthCheckInterval, healthCheckTimeout time.Duration) *SimpleServer {
 	serverURL, err := url.Parse(addr)
 	handleErr(err)
 

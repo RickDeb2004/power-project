@@ -14,9 +14,9 @@ import (
 func main() {
 
 	servers := []serve.Server{
-		serve.newServer("http://www.facebook.com", "http://www.facebook.com/health", 5*time.Second, 2*time.Second),
-		serve.newServer("http://www.bing.com", "http://www.bing.com/health", 5*time.Second, 2*time.Second),
-		serve.newServer("http://www.duckduckgo.com", "http://www.duckduckgo.com/health", 5*time.Second, 2*time.Second),
+		serve.NewServer("http://www.facebook.com", "http://www.facebook.com/health", 5*time.Second, 2*time.Second),
+		serve.NewServer("http://www.bing.com", "http://www.bing.com/health", 5*time.Second, 2*time.Second),
+		serve.NewServer("http://www.duckduckgo.com", "http://www.duckduckgo.com/health", 5*time.Second, 2*time.Second),
 	}
 	cache := cacher.NewCache()
 	lb := load.NewLoadBalancer("8000", servers, load.WeightedRoundRobin, &cache)
@@ -24,8 +24,8 @@ func main() {
 		lb.ServeProxy(w, r)
 	}
 	http.HandleFunc("/", handleRedirect)
-	fmt.Printf("serving request at 'local host : %s'\n", lb.port)
-	http.ListenAndServe(":"+lb.port, nil)
+	fmt.Printf("serving request at 'local host : %s'\n", lb.Port)
+	http.ListenAndServe(":"+lb.Port, nil)
 
 	// fmt.Println("Start Cache")
 	// expiration := 2 * time.Second //Set expiration time to 2 seconds

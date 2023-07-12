@@ -20,7 +20,7 @@ const (
 )
 
 type LoadBalancer struct {
-	port       string
+	Port       string
 	algorithm  LoadBalancingAlgorithm
 	servers    []serve.Server
 	Mutex      *sync.Mutex
@@ -28,7 +28,7 @@ type LoadBalancer struct {
 	cache      *cacher.Cache
 }
 
-func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancingAlgorithm, cache *cacher.Cache) *LoadBalancer {
+func NewLoadBalancer(Port string, servers []serve.Server, algorithm LoadBalancingAlgorithm, cache *cacher.Cache) *LoadBalancer {
 	for _, server := range servers {
 		simpleServer, ok := server.(*serve.SimpleServer)
 		{
@@ -43,7 +43,7 @@ func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancin
 	}
 
 	return &LoadBalancer{
-		port:      port,
+		Port:      Port,
 		algorithm: algorithm,
 		servers:   servers,
 		cache:     cache,
