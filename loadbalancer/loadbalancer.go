@@ -28,20 +28,19 @@ type LoadBalancer struct {
 	cache      *cacher.Cache
 }
 
-func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancingAlgorithm,  cache *cacher.Cache) *LoadBalancer {
+func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancingAlgorithm, cache *cacher.Cache) *LoadBalancer {
 	for _, server := range servers {
-		simpleServer,ok:=server.(*serve.SimpleServer)
-		         {
-			if!ok{
+		simpleServer, ok := server.(*serve.SimpleServer)
+		{
+			if !ok {
 				fmt.Println("Server is not a SimpleServer")
 				os.Exit(1)
 				continue
 			}
 			simpleServer.StartHealthCheck()
-		
-		
-	} 
+
 		}
+	}
 
 	return &LoadBalancer{
 		port:      port,
@@ -49,8 +48,6 @@ func NewLoadBalancer(port string, servers []serve.Server, algorithm LoadBalancin
 		servers:   servers,
 		cache:     cache,
 		mutex:     &sync.Mutex{},
-
-		
 	}
 }
 func handleErr(err error) {
@@ -72,16 +69,15 @@ func (lb *LoadBalancer) ServeProxy(w http.ResponseWriter, r *http.Request) {
 
 	// if lb.cache.Exists(cacheKey) {
 	// 	fmt.Println("Cache hit!")
-    //    response:=lb.cache.Get()
+	//    response:=lb.cache.Get()
 	// 	w.Write(response)
 	// 	return
-	response,exists:=lb.cache.Get(cacheKey)
-	if exists{
+	response, exists := lb.cache.Get(cacheKey)
+	if exists {
 		fmt.Println("Cache hit!")
 		w.Write(response)
 		return
 	}
-	
 
 	targetServer := lb.getAvailableServerFunc(r)
 	fmt.Printf("Forwarding request to address %q\n", targetServer.Address())
@@ -137,7 +133,7 @@ func (lb *LoadBalancer) getAvailableServerWeightedRoundRobin() serve.Server {
 			break
 		}
 		simpleServer.mutex.Unlock()
-		
+
 	}
 	lb.connection++
 	return selectedServer
@@ -150,7 +146,7 @@ func (lb *LoadBalancer) getAvailableServerLeastConnections() serve.Server {
 	var selectedServer serve.Server
 	for _, server := range lb.servers {
 		simpleServer := server.(*serve.SimpleServer)
-		
+
 		simpleServer.mutex.Lock()
 		if simpleServer.IsAlive() {
 			if minConnections == 0 || simpleServer.currentCons < minConnections {
