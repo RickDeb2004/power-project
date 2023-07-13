@@ -36,7 +36,10 @@ type healthCheck struct {
 
 func NewServer(addr string, healthCheckURL string, healthCheckInterval, healthCheckTimeout time.Duration) *SimpleServer {
 	serverURL, err := url.Parse(addr)
-	handleErr(err)
+	if err!=nil{
+  handleErr(err)
+	}
+	
 
 	healthCheck := &healthCheck{
 		url:             healthCheckURL,
