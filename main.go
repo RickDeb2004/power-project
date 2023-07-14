@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"net/http"
+	cacher "power-project/cache"
+	load "power-project/loadbalancer"
+	serve "power-project/server"
 	"time"
-  load "power-project/loadbalancer"
-   "power-project/server"
-   "power-project/cache"
-
-
 )
 
 func main() {
